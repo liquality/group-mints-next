@@ -12,16 +12,19 @@ import Navbar from "../components/navbar";
 import Header from "../components/header";
 import Auth from "../components/Auth";
 import { globalState } from "../state";
-
 import { useSnapshot } from "valtio";
+import Cookies from "universal-cookie";
+import { checkAuth } from "../helper";
+import useCheckAuth from "../hooks/useCheckAuth";
+
+const cookies = new Cookies();
 
 function GroupMintsApp({ Component, pageProps }: AppProps) {
+  const isAuthenticated = useCheckAuth();
   const config = {
     factoryAddress: "0x7f81fb5b32fA60DB8ddBa9db4d1A933CD07235e9",
     gasless: true,
   };
-  const snap = useSnapshot(globalState);
-  console.log(snap.isAuth, "SNAP=??");
 
   return (
     <ThirdwebProvider
@@ -40,7 +43,7 @@ function GroupMintsApp({ Component, pageProps }: AppProps) {
       <Header />
       <Component {...pageProps} />
       <Navbar />
-      <Auth />
+      {isAuthenticated ? null : <Auth />}
     </ThirdwebProvider>
   );
 }
